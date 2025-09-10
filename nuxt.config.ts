@@ -103,7 +103,7 @@ export default defineNuxtConfig({
     // },
     quality: 85,
     format: ["webp"],
-    // domains: ["blog.levenium.com", "api.cafebrasserieexpo.com"],
+    domains: ["blog.levenium.com"],
   },
 
   site: {

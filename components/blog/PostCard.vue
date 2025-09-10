@@ -5,18 +5,30 @@
       class="border-border relative flex aspect-16/10 items-center justify-center overflow-hidden rounded-lg border"
       @click="active = post.slug"
     >
-      <NuxtImg
-        v-if="post.feature_image"
-        :src="post.feature_image"
-        :alt="post.feature_image_alt ?? post.title"
-        class="h-full w-full object-cover"
-        :style="imageStyle"
-        loading="lazy"
-        sizes="100vw sm:600px"
-        width="479"
-        height="269"
-        format="webp"
-      />
+      <div v-if="post.feature_image" class="relative size-full">
+        <!-- NuxtImg dengan transisi fade-in -->
+        <NuxtImg
+          :src="post.feature_image"
+          :alt="post.feature_image_alt ?? post.title"
+          class="size-full object-cover transition-all"
+          :class="['nuxt-img-transition', { 'nuxt-img-loaded': isImageLoaded }]"
+          :style="imageStyle"
+          loading="lazy"
+          sizes="100vw sm:600px"
+          width="479"
+          height="269"
+          format="webp"
+          placeholder
+          @load="onImageLoad"
+        />
+
+        <!-- Placeholder skeleton yang akan fade-out -->
+        <div
+          v-if="post.feature_image && !isImageLoaded"
+          class="bg-muted absolute inset-0 animate-pulse transition-opacity duration-500"
+          :class="{ 'opacity-0': isImageLoaded }"
+        />
+      </div>
 
       <Logo v-else class="text-primary w-[50%] opacity-50" />
 
@@ -87,12 +99,13 @@
                 <NuxtImg
                   v-if="author.profile_image"
                   :src="author.profile_image"
-                  class="size-full object-cover"
+                  class="author-img-transition size-full object-cover"
                   width="36"
                   height="36"
                   sizes="36px"
                   loading="lazy"
                   format="webp"
+                  @load="onAuthorImageLoad(index)"
                 />
               </div>
             </nuxt-link>
@@ -139,6 +152,26 @@ const { $dayjs } = useNuxtApp();
 
 const active = useState("active-post-slug", () => null);
 
+const isImageLoaded = ref(false);
+const authorImagesLoaded = ref({});
+
+const onImageLoad = () => {
+  isImageLoaded.value = true;
+};
+
+const onAuthorImageLoad = (index) => {
+  authorImagesLoaded.value[index] = true;
+};
+
+// Reset state saat post berubah
+watch(
+  () => props.post?.slug,
+  () => {
+    isImageLoaded.value = false;
+    authorImagesLoaded.value = {};
+  },
+);
+
 const imageStyle = computed(() => {
   if (active.value === props.post.slug) {
     return { "view-transition-name": `post-feature-img-${props.post.slug}` };
@@ -146,3 +179,55 @@ const imageStyle = computed(() => {
   return {};
 });
 </script>
+
+<style scoped>
+/* Transisi untuk gambar utama */
+.nuxt-img-transition {
+  opacity: 0;
+  filter: blur(10px);
+  transition:
+    opacity 0.6s ease-out,
+    filter 0.6s ease-out;
+}
+
+.nuxt-img-transition.nuxt-img-loaded {
+  opacity: 1;
+  filter: blur(0);
+}
+
+/* Transisi untuk gambar author */
+.author-img-transition {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: Shimmer effect untuk placeholder */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.shimmer-placeholder {
+  animation-duration: 1.5s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: shimmer;
+  animation-timing-function: linear;
+  background: linear-gradient(to right, #f0f0f0 8%, #f8f8f8 18%, #f0f0f0 33%);
+  background-size: 936px 104px;
+}
+</style>
