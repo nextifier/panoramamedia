@@ -6,7 +6,7 @@
           class="flex flex-col gap-x-6 gap-y-6 lg:flex-row lg:items-end lg:justify-between"
         >
           <h1
-            class="text-primary text-4xl font-semibold tracking-tighter sm:text-6xl"
+            class="text-primary text-4xl font-semibold tracking-[-0.06em] sm:text-6xl"
           >
             Latest Updates
           </h1>
