@@ -82,7 +82,7 @@
               :style="`z-index: ${post.authors.length - index}`"
             >
               <div
-                class="border-border bg-muted flex size-9 items-center justify-center overflow-hidden rounded-full border"
+                class="border-border bg-muted flex size-8 items-center justify-center overflow-hidden rounded-full border"
               >
                 <NuxtImg
                   v-if="author.profile_image"
@@ -121,7 +121,7 @@
         <span
           v-if="post.published_at"
           v-tippy="$dayjs(post.published_at).format('MMMM D, YYYY [at] h:mm A')"
-          class="text-muted-foreground text-xs tracking-tight"
+          class="text-muted-foreground line-clamp-1 shrink-0 text-xs tracking-tight"
         >
           {{ $dayjs(post.published_at).fromNow() }}
         </span>

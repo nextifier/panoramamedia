@@ -643,7 +643,7 @@ img.pswp__img {
 }
 
 .section-title {
-  @apply text-primary max-w-4xl text-4xl !leading-[1.2] font-semibold tracking-tighter text-balance sm:text-5xl lg:text-6xl 2xl:text-7xl;
+  @apply text-primary max-w-4xl text-4xl !leading-[1.15] font-semibold tracking-tighter text-balance sm:text-5xl lg:text-6xl 2xl:text-7xl;
 }
 
 .section-title-large {
@@ -651,7 +651,7 @@ img.pswp__img {
 }
 
 .section-subtitle {
-  @apply font-semibold tracking-tighter text-balance text-orange-600 dark:text-orange-400;
+  @apply inline-block bg-linear-to-r from-red-500 via-orange-600 to-orange-500 bg-clip-text font-semibold tracking-tight text-balance text-transparent dark:from-red-500 dark:via-orange-500 dark:to-yellow-500;
 }
 
 .section-description {

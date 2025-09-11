@@ -32,6 +32,8 @@ export const usePostStore = defineStore("posts", {
               limit: "all",
             },
             key: "posts",
+            // server: false,
+            // immediate: false,
           },
         );
 
