@@ -18,8 +18,6 @@ export const usePostStore = defineStore("posts", {
       this.pending = true;
       this.error = null;
 
-      const config = useRuntimeConfig();
-
       try {
         const { data, error: fetchError } = await useFetch(
           `${useAppConfig().app.blogApiUrl}/posts`,
@@ -32,8 +30,6 @@ export const usePostStore = defineStore("posts", {
               limit: "all",
             },
             key: "posts",
-            // server: false,
-            // immediate: false,
           },
         );
 
