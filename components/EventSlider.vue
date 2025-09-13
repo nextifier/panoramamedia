@@ -11,7 +11,7 @@
     }"
     :plugins="[$wheelGesturesPlugin()]"
   >
-    <CarouselContent class="carousel-mx -ml-3 *:select-none">
+    <CarouselContent class="carousel-mx-wider -ml-3 *:select-none">
       <CarouselItem
         v-for="(event, index) in events.slice(0, 10)"
         :key="index"
@@ -24,7 +24,7 @@
     <div class="mt-6 h-8">
       <div
         v-if="canScrollPrev || canScrollNext"
-        class="container flex h-full justify-end gap-2"
+        class="container-wider flex h-full justify-end gap-2"
       >
         <button
           @click="scrollPrev"

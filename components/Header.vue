@@ -8,7 +8,7 @@
         !isMenuOpen,
     }"
   >
-    <nav class="container-wider flex h-full items-center">
+    <nav class="container flex h-full items-center">
       <nuxt-link
         to="/"
         aria-label="Home"

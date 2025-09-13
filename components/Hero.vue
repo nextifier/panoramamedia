@@ -1,6 +1,6 @@
 <template>
   <section id="hero" class="min-h-screen-offset overflow-hidden py-8 lg:py-10">
-    <div class="container-wider">
+    <div class="container">
       <div
         class="grid grid-cols-1 gap-x-8 gap-y-3.5 lg:grid-cols-2 lg:items-end"
       >
@@ -10,7 +10,9 @@
           <span class="section-subtitle"
             >Remember that one amazing event? Chances are, we were there.</span
           >
-          <h1 class="section-title">
+          <h1
+            class="text-primary max-w-4xl text-4xl !leading-[1.2] font-semibold tracking-tighter text-balance sm:text-5xl lg:text-6xl 2xl:text-7xl"
+          >
             We set the stage for your story to shine.
           </h1>
         </div>

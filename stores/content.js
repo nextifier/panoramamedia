@@ -43,7 +43,7 @@ export const useContentStore = defineStore("content", {
     components: {
       postSlider: {
         title: {
-          default: "Latest Updates",
+          default: "Latest updates",
           morePosts: "You might also like",
         },
       },

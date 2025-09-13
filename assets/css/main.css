@@ -282,7 +282,7 @@
 }
 
 @utility container-wider {
-  @apply 3xl:max-w-(--breakpoint-3xl) container xl:max-w-[1400px] 2xl:max-w-(--breakpoint-2xl);
+  @apply 3xl:max-w-[1600px] container xl:max-w-[1400px] 2xl:max-w-[1500px];
 }
 
 @utility shadow-wrapper {
@@ -490,6 +490,20 @@
   }
 }
 
+.carousel-mx-wider {
+  & .carousel-item {
+    @apply shrink-0;
+
+    &:first-child {
+      @apply xs:ml-[calc((100%-(540px-(1rem*2)))/2)] 3xl:ml-[calc((100%-(1600px-(1rem*2)))/2)] ml-4 sm:ml-[calc((100%-(640px-(1rem*2)))/2)] md:ml-[calc((100%-(768px-(1rem*2)))/2)] lg:ml-[calc((100%-(1024px-(1rem*2)))/2)] xl:ml-[calc((100%-(1400px-(1rem*2)))/2)] 2xl:ml-[calc((100%-(1500px-(1rem*2)))/2)];
+    }
+
+    &:last-child {
+      @apply xs:mr-[calc((100%-(540px-(1rem*2)))/2)] 3xl:mr-[calc((100%-(1600px-(1rem*2)))/2)] mr-4 sm:mr-[calc((100%-(640px-(1rem*2)))/2)] md:mr-[calc((100%-(768px-(1rem*2)))/2)] lg:mr-[calc((100%-(1024px-(1rem*2)))/2)] xl:mr-[calc((100%-(1400px-(1rem*2)))/2)] 2xl:mr-[calc((100%-(1500px-(1rem*2)))/2)];
+    }
+  }
+}
+
 @utility format-html {
   @apply prose dark:prose-invert prose-headings:font-semibold prose-headings:tracking-tighter sm:prose-lg prose-h1:font-extrabold prose-figcaption:capitalize prose-figcaption:text-center prose-figcaption:text-xs prose-img:w-full max-w-2xl tracking-[-0.015em] break-words;
 
@@ -643,7 +657,7 @@ img.pswp__img {
 }
 
 .section-title {
-  @apply text-primary max-w-4xl text-4xl !leading-[1.15] font-semibold tracking-tighter text-balance sm:text-5xl lg:text-6xl 2xl:text-7xl;
+  @apply text-primary text-4xl !leading-[1.2] font-semibold tracking-tighter text-balance sm:text-[3.2rem];
 }
 
 .section-title-large {

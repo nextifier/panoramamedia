@@ -8,7 +8,7 @@
           <h1
             class="text-primary text-4xl font-semibold tracking-[-0.06em] sm:text-6xl"
           >
-            Latest Updates
+            Latest updates
           </h1>
 
           <div class="flex w-full max-w-md items-center gap-2">

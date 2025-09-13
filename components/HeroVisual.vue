@@ -17,7 +17,7 @@
           :key="`mobile-${item.slug}`"
           class="bg-background border-border flex aspect-4/5 basis-1/3 items-center justify-center overflow-hidden rounded-2xl border text-center first:translate-y-2 first:-rotate-4 last:translate-y-2 last:rotate-4 nth-2:rotate-0"
         >
-          <NuxtImg
+          <!-- <NuxtImg
             :src="item.img"
             :alt="item.name"
             class="size-full object-cover"
@@ -25,7 +25,10 @@
             height="1350"
             sizes="400px"
             format="webp"
-          />
+          /> -->
+          <span class="px-2 text-center text-xs tracking-tight sm:text-sm">{{
+            item.name
+          }}</span>
         </div>
       </div>
     </div>
@@ -45,9 +48,9 @@
         <div
           v-for="(item, cardIndex) in row"
           :key="`desktop-${item.slug}`"
-          class="bg-background border-border flex aspect-4/5 items-center justify-center overflow-hidden rounded-2xl border text-center group-data-[layout=final]:basis-1/6 group-data-[layout=stacked]:absolute group-data-[layout=stacked]:top-0 group-data-[layout=stacked]:left-1/2 group-data-[layout=stacked]:-translate-x-1/2 group-data-[layout=final]:first:translate-y-8 group-data-[layout=final]:first:-rotate-6 group-data-[layout=final]:last:translate-y-8 group-data-[layout=final]:last:rotate-6 group-data-[layout=final]:nth-2:translate-y-3 group-data-[layout=final]:nth-2:-rotate-4 group-data-[layout=final]:nth-3:-rotate-2 group-data-[layout=final]:nth-last-2:translate-y-3 group-data-[layout=final]:nth-last-2:rotate-4 group-data-[layout=final]:nth-last-3:rotate-2"
+          class="bg-pattern-diagonal bg-background/80 border-border flex aspect-4/5 items-center justify-center overflow-hidden rounded-2xl border text-center backdrop-blur-lg group-data-[layout=final]:basis-1/6 group-data-[layout=stacked]:absolute group-data-[layout=stacked]:top-0 group-data-[layout=stacked]:left-1/2 group-data-[layout=stacked]:-translate-x-1/2 group-data-[layout=final]:first:translate-y-8 group-data-[layout=final]:first:-rotate-6 group-data-[layout=final]:last:translate-y-8 group-data-[layout=final]:last:rotate-6 group-data-[layout=final]:nth-2:translate-y-3 group-data-[layout=final]:nth-2:-rotate-4 group-data-[layout=final]:nth-3:-rotate-2 group-data-[layout=final]:nth-last-2:translate-y-3 group-data-[layout=final]:nth-last-2:rotate-4 group-data-[layout=final]:nth-last-3:rotate-2"
         >
-          <NuxtImg
+          <!-- <NuxtImg
             :src="item.img"
             :alt="item.name"
             class="size-full object-cover"
@@ -55,7 +58,10 @@
             height="1350"
             sizes="400px"
             format="webp"
-          />
+          /> -->
+          <span class="px-2 text-center text-xs tracking-tight sm:text-sm">{{
+            item.name
+          }}</span>
         </div>
       </div>
     </div>

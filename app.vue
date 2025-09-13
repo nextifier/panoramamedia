@@ -7,7 +7,7 @@
       <NuxtLayout>
         <NuxtPage
           :keepalive="{
-            include: ['news'],
+            include: ['index', 'news'],
           }"
         />
       </NuxtLayout>

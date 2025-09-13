@@ -65,7 +65,7 @@
 const props = defineProps({
   headline: {
     type: String,
-    default: "Latest Updates",
+    default: "Latest updates",
   },
 });
 const route = useRoute();
