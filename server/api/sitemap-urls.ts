@@ -1,10 +1,24 @@
 import { asSitemapUrl, defineSitemapEventHandler } from "#imports";
 
 export default defineSitemapEventHandler(async () => {
+  const config = useRuntimeConfig();
+
+  // Fetch posts from PM One API with API key (server-side only)
   const posts = await $fetch<ReturnType<typeof asSitemapUrl>>(
-    `${useAppConfig().app.blogApiUrl}/posts/?key=${useAppConfig().app.blogApiKey}&filter=authors.slug:[${useAppConfig().app.blogUsername}]%2Bvisibility:public&order=published_at+desc&limit=all`,
+    `${config.public.pmOneApiUrl}/api/public/blog/posts`,
+    {
+      headers: {
+        "X-API-Key": config.pmOneApiKey, // Private - not exposed to browser
+        Accept: "application/json",
+      },
+      query: {
+        per_page: 1000,
+        sort: "-published_at", // Sort descending
+        author: config.public.blogUsernames,
+      },
+    },
   ).then((res) => {
-    return res.posts.map((post) => {
+    return res.data.map((post) => {
       return {
         loc: `/news/${post.slug}`,
         lastmod: post.updated_at,

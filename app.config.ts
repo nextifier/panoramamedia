@@ -9,10 +9,6 @@ const app = {
     address:
       "Panorama Media Building, Jl. Tanjung Selor No.17A, RT.11/RW.6, Cideng, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10150",
   },
-  blogApiUrl: "https://blog.levenium.com/ghost/api/content",
-  blogApiKey: "6516c0eb11471899a2344b81e3",
-  blogUsername:
-    "panoramaevents,megabuild,megabuild-seo,outing,flei,flei-seo,cafe,indocomiccon,indoanimecon",
 };
 
 const settings = {
@@ -34,9 +30,7 @@ const contact = {
 };
 
 const emailRecipients = {
-  to: isProduction
-    ? ["hello@panoramamedia.co.id"]
-    : ["antonius@panoramamedia.co.id"],
+  to: isProduction ? ["hello@panoramamedia.co.id"] : ["antonius@panoramamedia.co.id"],
   cc: isProduction ? ["events@panoramamedia.co.id"] : [],
   bcc: isProduction ? [] : [],
 };
@@ -116,7 +110,7 @@ const routes = {
   news: {
     label: "News",
     path: "/news",
-    rightClickLink: "https://blog.levenium.com/ghost/#/dashboard",
+    rightClickLink: isProduction ? "https://api.pmone.id/posts" : "http://localhost:8000/posts",
   },
 };
 

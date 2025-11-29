@@ -19,26 +19,23 @@ export const usePostStore = defineStore("posts", {
       this.error = null;
 
       try {
-        const { data, error: fetchError } = await useFetch(
-          `${useAppConfig().app.blogApiUrl}/posts`,
-          {
-            query: {
-              key: useAppConfig().app.blogApiKey,
-              include: "authors,tags",
-              filter: `authors.slug:[${useAppConfig().app.blogUsername}]+visibility:public`,
-              order: "published_at desc",
-              limit: "all",
-            },
-            key: "posts",
+        // Call local Nuxt server API (which proxies to PM One API)
+        // API key is kept secure on the server, not exposed to browser
+        const { data, error: fetchError } = await useFetch("/api/blog/posts", {
+          query: {
+            per_page: 100, // Get up to 100 posts
+            sort: "-published_at", // Sort by published_at descending (newest first)
           },
-        );
+          key: "posts",
+        });
 
         if (fetchError.value) {
           throw fetchError.value;
         }
 
-        if (data.value?.posts) {
-          this.posts = data.value.posts;
+        // PM One returns { data: [...], meta: {...} }
+        if (data.value?.data) {
+          this.posts = data.value.data;
           this.hasFetchedPosts = true;
         }
       } catch (err) {

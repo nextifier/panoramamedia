@@ -6,6 +6,19 @@ export default defineNuxtConfig({
     componentInspector: false,
   },
 
+  runtimeConfig: {
+    // Private keys that are only available server-side
+    pmOneApiKey: process.env.NUXT_PM_ONE_API_KEY || "pk_JOtzJkN8cYc6DjxAVDsGX1VCmBcU1lRZrk8LnXiK",
+
+    // Public keys that are exposed to the client
+    public: {
+      pmOneApiUrl:
+        process.env.NODE_ENV === "production" ? "https://api.pmone.id" : "http://localhost:8000",
+      blogUsernames:
+        "megabuild.blog,flei.blog,morefood.blog,icc.blog,inacon.blog,ioe.blog,events.blog,cafe.blog,balboa",
+    },
+  },
+
   nitro: {
     prerender: {
       crawlLinks: true,
@@ -14,7 +27,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    "/blog/**": { redirect: "/news/**", statusCode: 301 },
+    "/blog/**": { redirect: "/news/**" },
   },
 
   app: {
@@ -109,9 +122,7 @@ export default defineNuxtConfig({
   site: {
     name: "Panorama Media",
     url:
-      process.env.NODE_ENV === "production"
-        ? "https://panoramaevents.id"
-        : "http://localhost:3000",
+      process.env.NODE_ENV === "production" ? "https://panoramaevents.id" : "http://localhost:3000",
   },
 
   robots: {
@@ -135,7 +146,6 @@ export default defineNuxtConfig({
     tags: [
       {
         id: "G-4ZNWF3G5DM",
-        enabled: true,
       },
     ],
   },

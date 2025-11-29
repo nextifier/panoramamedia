@@ -70,24 +70,12 @@ const props = defineProps({
 });
 const route = useRoute();
 
-// const postStore = usePostStore();
-// postStore.fetchPosts();
-
-const { data } = await useFetch(`${useAppConfig().app.blogApiUrl}/posts`, {
-  query: {
-    key: useAppConfig().app.blogApiKey,
-    include: "authors,tags",
-    filter: `authors.slug:[${useAppConfig().app.blogUsername}]+visibility:public`,
-    order: "published_at desc",
-    limit: "all",
-  },
-  key: "posts",
-  server: false,
-  // immediate: false,
-});
+// Use Pinia store - data is cached and shared across components
+const postStore = usePostStore();
+postStore.fetchPosts();
 
 const filteredPosts = computed(() => {
-  const posts = Array.isArray(data?.value?.posts) ? data?.value?.posts : [];
+  const posts = Array.isArray(postStore.posts) ? postStore.posts : [];
   return route?.params?.slug
     ? posts.filter((post) => post.slug !== route.params.slug)
     : posts;

@@ -52,14 +52,14 @@
             class="mt-4 flex flex-col items-center text-center xl:items-center xl:text-center"
           >
             <span
-              v-if="post.primary_tag?.name"
-              class="text-primary border-border mb-3 flex items-center justify-center rounded-full border px-3 py-2 text-xs font-semibold tracking-tight capitalize sm:text-sm"
+              v-if="post.tags?.length > 0"
+              class="text-primary border-border mb-3 flex items-center justify-center rounded-full border px-3 py-2 text-xs font-semibold tracking-tighter capitalize sm:text-sm"
             >
-              {{ post.primary_tag.name }}
+              {{ post.tags[0] }}
             </span>
 
             <h1
-              class="text-primary text-[clamp(2rem,9vw,3rem)] !leading-[1.2] font-bold tracking-tighter text-balance xl:-mx-12"
+              class="text-primary text-[clamp(2rem,9vw,3rem)] !leading-[1.2] font-semibold tracking-tighter text-balance xl:-mx-12"
             >
               {{ post.title }}
             </h1>
@@ -67,20 +67,22 @@
             <div v-if="post.authors?.length" class="mt-4">
               <div class="flex items-center gap-x-2 text-left">
                 <div class="flex shrink-0 -space-x-4">
-                  <nuxt-link
+                  <div
                     v-for="(author, index) in post.authors"
                     :key="index"
-                    :to="author.website ?? ''"
-                    target="_blank"
                     class="gradient-insta relative rounded-full bg-linear-to-tr p-0.5"
                     :style="`z-index: ${post.authors.length - index}`"
                   >
                     <div
-                      class="border-background bg-muted flex size-12 items-center justify-center overflow-hidden rounded-full border-2"
+                      class="border-background bg-muted flex size-10 items-center justify-center overflow-hidden rounded-full border-2"
                     >
                       <NuxtImg
                         v-if="author.profile_image"
-                        :src="author.profile_image"
+                        :src="
+                          author.profile_image?.sm ||
+                          author.profile_image?.original ||
+                          author.profile_image
+                        "
                         class="size-full object-cover"
                         width="56"
                         height="56"
@@ -89,45 +91,36 @@
                         format="webp"
                       />
                     </div>
-                  </nuxt-link>
+                  </div>
                 </div>
 
                 <div class="flex flex-col gap-y-1">
                   <div
-                    class="text-primary line-clamp-1 font-semibold tracking-tight"
+                    class="text-primary line-clamp-1 font-medium tracking-tight"
                   >
-                    <nuxt-link
-                      v-for="(author, index) in post.authors"
-                      :key="index"
-                      :to="author.website ?? ''"
-                      target="_blank"
-                      class="hover:underline"
-                    >
+                    <span v-for="(author, index) in post.authors" :key="index">
                       {{ author.name
                       }}<span
                         v-if="index != Object.keys(post.authors).length - 1"
                         >,
                       </span>
-                    </nuxt-link>
+                    </span>
                   </div>
 
-                  <div
+                  <!-- <div
                     class="text-muted-foreground line-clamp-1 text-xs tracking-tight"
                   >
-                    <nuxt-link
+                    <span
                       v-for="(author, index) in post.authors"
                       :key="index"
-                      :to="author.website ?? ''"
-                      target="_blank"
-                      class="hover:text-primary"
                     >
-                      @{{ author.website.split("/").pop()
+                      @{{ author.username
                       }}<span
                         v-if="index != Object.keys(post.authors).length - 1"
                         >,
                       </span>
-                    </nuxt-link>
-                  </div>
+                    </span>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -157,20 +150,25 @@
             </div>
 
             <div
-              v-if="post.custom_excerpt"
+              v-if="post.excerpt"
               class="text-primary mt-10 text-xl font-semibold tracking-tighter text-pretty sm:text-2xl"
             >
-              {{ post.custom_excerpt }}
+              {{ post.excerpt }}
             </div>
           </div>
 
           <div
-            v-if="post.feature_image"
+            v-if="post.featured_image"
             class="bg-muted mx-auto mt-10 block overflow-hidden"
           >
             <NuxtImg
-              :src="post.feature_image"
-              :alt="post.feature_image_alt"
+              :src="
+                post.featured_image?.lg ||
+                post.featured_image?.md ||
+                post.featured_image?.original ||
+                post.featured_image
+              "
+              :alt="post.title"
               class="size-full rounded-xl object-cover"
               :style="{
                 'view-transition-name': `post-feature-img-${post.slug}`,
@@ -199,7 +197,7 @@
                   :key="index"
                   class="border-border rounded-full border px-3 py-2 text-sm capitalize"
                 >
-                  {{ tag.name }}
+                  {{ tag }}
                 </span>
               </div>
             </div>
@@ -207,7 +205,7 @@
 
           <div class="mt-10 flex flex-col items-center gap-y-4">
             <span
-              class="text-primary text-center text-lg font-bold tracking-tight sm:text-xl"
+              class="text-primary text-center text-lg font-semibold tracking-tighter sm:text-xl"
               >Share this post</span
             >
             <SharePage
@@ -236,25 +234,19 @@
 
 <script setup>
 const route = useRoute();
-const config = useRuntimeConfig();
 
 const { $dayjs } = useNuxtApp();
 
 import { useSidebar } from "@/components/ui/sidebar/utils";
 const { open, isMobile, setOpenMobile } = useSidebar();
 
+// Call local Nuxt server API (which proxies to PM One API)
+// API key is kept secure on the server, not exposed to browser
 const { data, pending, error } = await useFetch(
-  `${useAppConfig().app.blogApiUrl}/posts/slug/${route.params.slug}`,
-  {
-    query: {
-      key: useAppConfig().app.blogApiKey,
-      include: "authors,tags",
-      filter: `authors.slug:[${useAppConfig().app.blogUsername}]+visibility:public`,
-    },
-  },
+  `/api/blog/posts/${route.params.slug}`,
 );
 
-const post = computed(() => data?.value?.posts[0]);
+const post = computed(() => data?.value?.data);
 
 if (!post.value) {
   throw createError({
@@ -280,19 +272,20 @@ function generatePostExcerpt(postBody) {
   }
 }
 
-const title = post?.value?.meta_title ?? ref(post?.value?.title) ?? "";
-const description =
-  post?.value?.meta_description ??
-  post?.value?.custom_excerpt ??
-  generatePostExcerpt(post?.value?.html) ??
-  "";
+const title = computed(() => post.value?.meta_title || post.value?.title || "");
+const description = computed(() =>
+  post.value?.meta_description ||
+  post.value?.excerpt ||
+  generatePostExcerpt(post.value?.content) ||
+  ""
+);
 
 usePageMeta("", {
   title: title,
   description: description,
 });
 
-const rawHtml = computed(() => post.value?.html || "");
+const rawHtml = computed(() => post.value?.content || "");
 const { processedHtml } = useProcessedContent(rawHtml);
 
 const foundHeadings = ref([]);
@@ -313,11 +306,17 @@ onMounted(async () => {
       selector = `[id="${selector.substring(1)}"]`;
     }
 
-    const element = document.querySelector(selector);
-    if (element) {
-      // Panggil scrollIntoView untuk memicu ulang scroll dengan margin yang benar
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    // Retry mechanism untuk memastikan element sudah ada di DOM
+    const scrollToElement = (retries = 5) => {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (retries > 0) {
+        setTimeout(() => scrollToElement(retries - 1), 100);
+      }
+    };
+
+    scrollToElement();
   }
 });
 </script>
