@@ -8,14 +8,18 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Private keys that are only available server-side
-    pmOneApiKey: process.env.NUXT_PM_ONE_API_KEY || "pk_JOtzJkN8cYc6DjxAVDsGX1VCmBcU1lRZrk8LnXiK",
+    pmOneApiKey:
+      process.env.NUXT_PM_ONE_API_KEY ||
+      "pk_JOtzJkN8cYc6DjxAVDsGX1VCmBcU1lRZrk8LnXiK",
 
     // Public keys that are exposed to the client
     public: {
       pmOneApiUrl:
-        process.env.NODE_ENV === "production" ? "https://api.pmone.id" : "http://localhost:8000",
+        process.env.NODE_ENV === "production"
+          ? "https://api.pmone.id"
+          : "http://localhost:8000",
       blogUsernames:
-        "megabuild.blog,flei.blog,morefood.blog,icc.blog,inacon.blog,ioe.blog,events.blog,cafe.blog,balboa",
+        "megabuild.blog,flei.blog,morefood.blog,icc.blog,inacon.blog,ioe.blog,pe.blog,cafe.blog,balboa",
     },
   },
 
@@ -33,8 +37,10 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Panorama Media",
+      meta: [{ name: "google", content: "notranslate" }],
       htmlAttrs: {
         lang: "en",
+        translate: "no",
       },
       link: [
         {
@@ -64,17 +70,15 @@ export default defineNuxtConfig({
     "@nuxtjs/seo",
     "nuxt-gtag",
     "@formkit/auto-animate/nuxt",
-    // "@zadigetvoltaire/nuxt-gtm",
-    // "nuxt-disqus",
   ],
 
   fonts: {
     provider: "local",
     families: [
       {
-        name: "PlusJakartaSans",
-        src: "/fonts/PlusJakartaSans-VariableFont.woff2",
-        weight: "200 800",
+        name: "MinusOne",
+        src: "/fonts/MinusOne-VF.woff2",
+        weight: "100 1000",
         display: "swap",
       },
     ],
@@ -96,7 +100,7 @@ export default defineNuxtConfig({
      * Directory that the component lives in.
      * @default "./components/ui"
      */
-    componentDir: "./components/ui",
+    componentDir: "./app/components/ui",
   },
 
   colorMode: {
@@ -122,7 +126,9 @@ export default defineNuxtConfig({
   site: {
     name: "Panorama Media",
     url:
-      process.env.NODE_ENV === "production" ? "https://panoramaevents.id" : "http://localhost:3000",
+      process.env.NODE_ENV === "production"
+        ? "https://panoramaevents.id"
+        : "http://localhost:3000",
   },
 
   robots: {
@@ -149,15 +155,6 @@ export default defineNuxtConfig({
       },
     ],
   },
-
-  // gtm: {
-  //   defer: true,
-  //   id: "GTM-MPMTC993",
-  // },
-
-  // disqus: {
-  //   shortname: "pmone",
-  // },
 
   compatibilityDate: "2025-05-01",
 
