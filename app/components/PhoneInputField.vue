@@ -1,10 +1,12 @@
 <template>
   <PhoneInput
+    v-model="phoneValue"
     noUseBrowserLocale
     fetchCountry
     country-code="ID"
     :ignored-countries="['AC']"
     class="flex"
+    @update:model-value="handlePhoneUpdate"
   >
     <template #selector="{ inputValue, updateInputValue, countries }">
       <Popover v-model:open="open">
@@ -66,7 +68,31 @@
 import PhoneInput from "base-vue-phone-input";
 import { useFocus } from "@vueuse/core";
 import { ChevronsUpDown } from "lucide-vue-next";
+
+const props = defineProps<{
+  modelValue?: string;
+}>();
+
+const emit = defineEmits<{
+  "update:modelValue": [value: string];
+}>();
+
 const open = ref(false);
 const phoneInput = ref(null);
 const { focused } = useFocus(phoneInput);
+
+// Internal phone value - must be a string for base-vue-phone-input
+const phoneValue = ref(props.modelValue || "");
+
+// Handle phone value updates and emit formatted phone number
+const handlePhoneUpdate = (value: any) => {
+  // base-vue-phone-input emits an object with phone details
+  if (value?.e164) {
+    emit("update:modelValue", value.e164);
+  } else if (value?.nationalNumber) {
+    emit("update:modelValue", value.nationalNumber);
+  } else if (typeof value === "string") {
+    emit("update:modelValue", value);
+  }
+};
 </script>

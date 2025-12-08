@@ -441,7 +441,7 @@
   @apply grid gap-2.5;
 
   & input {
-    @apply h-10;
+    @apply h-9;
   }
 
   & input,

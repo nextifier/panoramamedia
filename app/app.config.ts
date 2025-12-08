@@ -3,6 +3,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const app = {
   name: "Panorama Media",
   shortName: "Panorama Media",
+  projectUsername: "pm",
   url: isProduction ? "https://panoramamedia.co.id" : "http://localhost:3000",
   company: {
     name: "PT Panorama Media",
@@ -22,17 +23,16 @@ const settings = {
   terms: {
     lastUpdate: "August 21, 2025",
   },
+  bookSpaceForm: {
+    showJobTitle: false,
+    showBrandName: true,
+    showProducts: false,
+  },
 };
 
 const contact = {
   email: "hello@panoramamedia.co.id",
   whatsapp: "6281110529527",
-};
-
-const emailRecipients = {
-  to: isProduction ? ["hello@panoramamedia.co.id"] : ["antonius@panoramamedia.co.id"],
-  cc: isProduction ? ["events@panoramamedia.co.id"] : [],
-  bcc: isProduction ? [] : [],
 };
 
 const social = {
@@ -110,7 +110,9 @@ const routes = {
   news: {
     label: "News",
     path: "/news",
-    rightClickLink: isProduction ? "https://api.pmone.id/posts" : "http://localhost:8000/posts",
+    rightClickLink: isProduction
+      ? "https://api.pmone.id/posts"
+      : "http://localhost:8000/posts",
   },
 };
 
@@ -118,7 +120,6 @@ export default defineAppConfig({
   app: app,
   settings: settings,
   contact: contact,
-  emailRecipients: emailRecipients,
   social: social,
   contactLinks: contactLinks,
   socialLinks: socialLinks,

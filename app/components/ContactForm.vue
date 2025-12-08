@@ -1,121 +1,135 @@
 <template>
   <div>
-    <div v-if="!isMessageSent">
+    <!-- Form State -->
+    <template v-if="!isSubmitted">
+      <!-- Header -->
       <h1
-        class="text-primary text-3xl leading-[1.25] font-semibold tracking-tighter text-balance sm:text-5xl sm:leading-[1.25]"
+        class="text-primary text-3xl leading-[1.25]! font-medium tracking-tighter text-balance sm:text-4xl"
       >
-        {{ props.title ?? "Contact us" }}
+        {{ title }}
       </h1>
-
-      <p v-if="props.description" class="mt-2 tracking-tight sm:mt-3">
-        {{ props.description }}
+      <p v-if="description" class="mt-2 tracking-tight sm:mt-3">
+        {{ description }}
       </p>
 
-      <form
-        @submit.prevent="sendMessage"
-        id="contact-form"
-        class="mt-8 grid gap-6"
-      >
-        <div class="input-group">
-          <label>Name</label>
+      <!-- Form -->
+      <form @submit.prevent="handleSubmit" class="mt-8 grid gap-6">
+        <!-- Dynamic Fields -->
+        <template v-for="field in visibleFields" :key="field.name">
+          <div class="input-group">
+            <label :for="field.name">{{ field.label }}</label>
+
+            <!-- Phone Input -->
+            <PhoneInputField
+              v-if="field.type === 'phone'"
+              :id="field.name"
+              v-model="formState[field.name]"
+              :required="field.required"
+            />
+
+            <!-- Products Select (when productOptions is provided) -->
+            <template
+              v-else-if="field.name === 'products' && productOptions?.length"
+            >
+              <!-- Custom Input for "Other" -->
+              <div v-if="showCustomProductInput" class="flex gap-2">
+                <input
+                  :id="field.name"
+                  v-model="formState[field.name]"
+                  type="text"
+                  :name="field.name"
+                  placeholder="Enter your product type"
+                  class="flex-1"
+                />
+                <button
+                  type="button"
+                  class="text-muted-foreground hover:text-foreground aspect-square shrink-0 rounded-full text-sm underline transition"
+                  @click="switchToProductSelect"
+                >
+                  <Icon name="lucide:chevron-down" class="size-4 shrink-0" />
+                </button>
+              </div>
+
+              <!-- Select Dropdown -->
+              <Select
+                v-else
+                v-model="formState[field.name]"
+                @update:model-value="handleProductSelect"
+              >
+                <SelectTrigger class="w-full">
+                  <SelectValue placeholder="Select a product" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      v-for="(item, index) in productOptions"
+                      :key="index"
+                      :value="item"
+                    >
+                      {{ item }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </template>
+
+            <!-- Textarea -->
+            <textarea
+              v-else-if="field.type === 'textarea'"
+              :id="field.name"
+              v-model="formState[field.name]"
+              :name="field.name"
+              :placeholder="field.placeholder"
+              :required="field.required"
+              class="autogrow"
+            />
+
+            <!-- Default Input -->
+            <input
+              v-else
+              :id="field.name"
+              v-model="formState[field.name]"
+              :type="field.type || 'text'"
+              :name="field.name"
+              :placeholder="field.placeholder"
+              :required="field.required"
+            />
+          </div>
+        </template>
+
+        <!-- Honeypot Field (hidden from users, visible to bots) -->
+        <div class="absolute -left-[9999px] opacity-0" aria-hidden="true">
+          <label for="website">Website</label>
           <input
-            v-model="form.name"
+            id="website"
+            v-model="honeypot.website"
             type="text"
-            name="name"
-            id="name"
-            required
+            name="website"
+            tabindex="-1"
+            autocomplete="off"
           />
         </div>
 
-        <div v-if="showJobTitleField" class="input-group">
-          <label>Job Title</label>
-          <input
-            v-model="form.jobTitle"
-            type="text"
-            name="jobTitle"
-            id="jobTitle"
-          />
-        </div>
-
-        <div v-if="showBrandField" class="input-group">
-          <label>Brand / Company Name</label>
-          <input
-            v-model="form.company"
-            type="text"
-            name="company"
-            id="company"
-          />
-        </div>
-
-        <div v-if="showProductsField" class="input-group">
-          <label>Products / Services</label>
-          <input
-            v-model="form.products"
-            type="text"
-            name="products"
-            id="products"
-          />
-        </div>
-
-        <div class="input-group">
-          <label>Email</label>
-          <input
-            v-model="form.email"
-            type="text"
-            name="email"
-            id="email"
-            required
-          />
-        </div>
-        <div class="input-group">
-          <label>Phone (WhatsApp)</label>
-          <PhoneInputField
-            v-model="form.phone"
-            id="phone"
-            name="phone"
-            required
-          />
-        </div>
-        <div v-if="!props.message" class="input-group">
-          <label>Message</label>
-          <textarea
-            v-model="form.message"
-            name="message"
-            id="message"
-            class="autogrow"
-            placeholder="Leave a message.."
-            required
-          ></textarea>
-        </div>
-
-        <p
-          v-if="props.title == 'Exhibitor Registration'"
-          class="text-muted-foreground text-sm tracking-tight"
-        >
-          Do not worry. By submitting this form, you are not automatically
-          registered as an exhibitor. We need your contact information so our
-          sales team can provide you with further details about available
-          booths, pricing, and more.
+        <!-- Disclaimer -->
+        <p class="text-muted-foreground text-sm tracking-tight">
+          {{ disclaimerText }}
         </p>
 
-        <p v-else class="text-muted-foreground text-sm tracking-tight">
-          Please ensure you put the correct and active email address and phone
-          number. Our team will reach you soon.
-        </p>
-
+        <!-- Submit Button -->
         <button
           type="submit"
           class="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center justify-center gap-2 justify-self-start rounded-xl px-4 py-3 text-sm font-semibold tracking-tight transition active:scale-98"
-          :disabled="loading"
+          :disabled="isLoading"
           v-ripple
         >
-          <LoadingSpinner v-if="loading" class="border-background size-4" />
-          <span>{{ buttonLabel ?? "Send message" }}</span>
+          <LoadingSpinner v-if="isLoading" class="border-background size-4" />
+          <span>{{ submitLabel }}</span>
         </button>
       </form>
-    </div>
+    </template>
 
-    <div v-else>
+    <!-- Success State -->
+    <template v-else>
       <div
         class="min-h-screen-offset -mt-16 flex flex-col items-center justify-center text-center"
       >
@@ -129,125 +143,236 @@
         </div>
 
         <h2
-          class="text-primary text-4xl font-semibold tracking-tighter text-balance sm:text-5xl xl:text-6xl"
+          class="text-primary mt-6 text-3xl font-medium tracking-tighter text-balance sm:text-4xl"
         >
-          Thank you! Your request has been successfully submitted.
+          {{ successTitle }}
         </h2>
-        <p class="mt-4">
-          Our team will contact you via email or WhatsApp as soon as possible.
-        </p>
+        <p class="mt-4">{{ successMessage }}</p>
 
-        <nuxt-link
+        <NuxtLink
           to="/"
           class="bg-primary text-primary-foreground mt-8 rounded-xl px-6 py-4 font-semibold tracking-tight"
           v-ripple
-          @click="closeInquiryDialog"
+          @click="handleSuccessAction"
         >
-          Okay. Send me back to home
-        </nuxt-link>
+          {{ successButtonLabel }}
+        </NuxtLink>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
 <script setup>
 import { toast } from "vue-sonner";
 
-const { gtag } = useGtag();
-
+// Props with defaults
 const props = defineProps({
-  title: String,
-  description: String,
-  showBrandField: Boolean,
-  showJobTitleField: Boolean,
-  showProductsField: Boolean,
-  message: String,
-  buttonLabel: String,
+  // Form configuration
+  title: { type: String, default: "Contact us" },
+  description: { type: String, default: null },
+  submitLabel: { type: String, default: "Send message" },
+  subject: { type: String, default: "Contact Form" },
+
+  // Field visibility toggles
+  showJobTitle: { type: Boolean, default: false },
+  showBrandName: { type: Boolean, default: false },
+  showProducts: { type: Boolean, default: false },
+  showMessage: { type: Boolean, default: true },
+
+  // Product options for select dropdown (if provided, renders Select instead of Input)
+  productOptions: { type: Array, default: null },
+
+  // Pre-filled message (hides message field if provided)
+  prefilledMessage: { type: String, default: null },
+
+  // Custom disclaimer
+  disclaimer: { type: String, default: null },
+
+  // Success state customization
+  successTitle: {
+    type: String,
+    default: "Thank you! Your request has been successfully submitted.",
+  },
+  successMessage: {
+    type: String,
+    default:
+      "Our team will contact you via email or WhatsApp as soon as possible.",
+  },
+  successButtonLabel: { type: String, default: "Okay. Send me back to home" },
 });
 
+// Emits
+const emit = defineEmits(["submit", "success", "error"]);
+
+// External dependencies
+const { gtag } = useGtag();
+const config = useAppConfig();
 const uiStore = useUiStore();
-const closeInquiryDialog = () => {
-  uiStore.closeInquiryDialog();
-};
 
-const isMessageSent = ref(false);
-const loading = ref(false);
-const form = reactive({
-  name: "",
-  jobTitle: "",
-  company: "",
-  products: "",
-  email: "",
-  phone: "",
-  message: "",
+// State
+const isLoading = ref(false);
+const isSubmitted = ref(false);
+const formState = reactive({});
+const honeypot = reactive({
+  website: "",
+  tokenTime: "",
+});
+const showCustomProductInput = ref(false);
+
+// All available fields definition
+const allFields = [
+  { name: "name", label: "Name", type: "text", required: true },
+  { name: "jobTitle", label: "Job Title", type: "text", required: false },
+  { name: "brandName", label: "Brand Name", type: "text", required: false },
+  { name: "products", label: "Products", type: "text", required: false },
+  { name: "email", label: "Email", type: "email", required: true },
+  { name: "phone", label: "Phone (WhatsApp)", type: "phone", required: true },
+  {
+    name: "message",
+    label: "Message",
+    type: "textarea",
+    placeholder: "Leave a message..",
+    required: true,
+  },
+];
+
+// Computed: fields to include based on props
+const fields = computed(() => {
+  return allFields.filter((field) => {
+    if (field.name === "jobTitle") return props.showJobTitle;
+    if (field.name === "brandName") return props.showBrandName;
+    if (field.name === "products") return props.showProducts;
+    if (field.name === "message") return props.showMessage;
+    return true; // name, email, phone always shown
+  });
 });
 
-const sendMessage = async () => {
-  loading.value = true;
+// Initialize form state and honeypot token on mount
+onMounted(() => {
+  // Initialize form fields
+  fields.value.forEach((field) => {
+    formState[field.name] = "";
+  });
+
+  // Generate honeypot timestamp token
+  honeypot.tokenTime = generateTimestampToken();
+});
+
+// Computed: visible fields (respects prefilledMessage)
+const visibleFields = computed(() => {
+  return fields.value.filter((field) => {
+    // Hide message field if prefilled message is provided
+    if (field.name === "message" && props.prefilledMessage) {
+      return false;
+    }
+    return true;
+  });
+});
+
+const disclaimerText = computed(() => {
+  if (props.disclaimer) return props.disclaimer;
+  if (props.title === "Exhibitor Registration") {
+    return "Do not worry. By submitting this form, you are not automatically registered as an exhibitor. We need your contact information so our sales team can provide you with further details about available booths, pricing, and more.";
+  }
+  return "Please ensure you put the correct and active email address and phone number. Our team will reach you soon.";
+});
+
+// Methods
+function generateTimestampToken() {
+  const timestamp = Math.floor(Date.now() / 1000);
+  const random1 = Math.random().toString(36).substring(2, 10);
+  const random2 = Math.random().toString(36).substring(2, 10);
+  return btoa(`${random1}_${timestamp}_${random2}`);
+}
+
+function buildFormData() {
+  const data = {};
+
+  fields.value.forEach((field) => {
+    const value = formState[field.name];
+    if (value) {
+      // Convert camelCase to snake_case for API
+      const apiKey =
+        field.apiKey || field.name.replace(/([A-Z])/g, "_$1").toLowerCase();
+      data[apiKey] = value;
+    }
+  });
+
+  // Add prefilled message if provided
+  if (props.prefilledMessage) {
+    data.message = props.prefilledMessage;
+  }
+
+  return data;
+}
+
+function resetForm() {
+  Object.keys(formState).forEach((key) => {
+    formState[key] = "";
+  });
+  honeypot.website = "";
+  honeypot.tokenTime = generateTimestampToken();
+  showCustomProductInput.value = false;
+}
+
+async function handleSubmit() {
+  isLoading.value = true;
+  emit("submit", formState);
 
   try {
-    const config = useAppConfig();
+    const formData = buildFormData();
+    const subject = props.subject;
 
-    // Prepare form data for PM One API
-    const formData = {
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      message: props.message ?? form.message,
-    };
-
-    // Add optional fields if they exist
-    if (form.jobTitle) {
-      formData.job_title = form.jobTitle;
-    }
-    if (form.company) {
-      formData.company = form.company;
-    }
-    if (form.products) {
-      formData.products = form.products;
-    }
-
-    // PM One API endpoint
-    const runtimeConfig = useRuntimeConfig();
-    const endpoint = `${runtimeConfig.public.pmOneApiUrl}/api/contact-forms/submit`;
-
-    const response = await fetch(endpoint, {
+    const result = await $fetch("/api/contact/submit", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        project_username: "panoramamedia", // Your project username in PM One
-        subject: `Contact Form - ${config.app.shortName}`,
+      body: {
+        project_username: useAppConfig().app.projectUsername,
+        subject,
         data: formData,
-      }),
+        // Honeypot fields
+        website: honeypot.website,
+        _token_time: honeypot.tokenTime,
+      },
     });
 
-    const result = await response.json();
-
     if (result.success) {
-      // Success - reset form
-      form.name = "";
-      form.jobTitle = "";
-      form.company = "";
-      form.products = "";
-      form.email = "";
-      form.phone = "";
-      form.message = "";
-
-      gtag("event", "contact_form_submission");
-
-      isMessageSent.value = true;
+      resetForm();
+      gtag("event", "contact_form_submission", {
+        form_title: props.title,
+        project: useAppConfig().app.projectUsername,
+      });
+      isSubmitted.value = true;
+      emit("success", result);
     } else {
-      // Error from PM One API
-      toast.error(result.message || "Failed to send message. Please try again.");
+      toast.error(
+        result.message || "Failed to send message. Please try again.",
+      );
+      emit("error", result);
     }
   } catch (error) {
     console.error("Contact form error:", error);
-    toast.error("Network error. Please try again later.");
+    const message =
+      error?.data?.message || "Network error. Please try again later.";
+    toast.error(message);
+    emit("error", error);
   } finally {
-    loading.value = false;
+    isLoading.value = false;
   }
-};
+}
+
+function handleSuccessAction() {
+  uiStore.closeInquiryDialog?.();
+}
+
+function handleProductSelect(value) {
+  if (value === "Other") {
+    formState.products = "";
+    showCustomProductInput.value = true;
+  }
+}
+
+function switchToProductSelect() {
+  formState.products = "";
+  showCustomProductInput.value = false;
+}
 </script>

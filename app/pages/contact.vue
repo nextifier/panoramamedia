@@ -3,7 +3,7 @@
     <ContactForm
       :title="content.title"
       :description="content.description"
-      :showBrandField="false"
+      :subject="`Contact Form - ${useAppConfig().app.shortName}`"
     />
   </div>
 </template>

@@ -38,6 +38,10 @@ export const useContentStore = defineStore("content", {
         title: `Privacy Policy`,
         description: ``,
       },
+      bookSpace: {
+        title: `Book Your Space`,
+        description: `Secure your booth at ${useAppConfig().app.name} and showcase your brand to thousands of potential customers. Join leading brands and enhance your business growth.`,
+      },
     },
 
     components: {
@@ -51,6 +55,11 @@ export const useContentStore = defineStore("content", {
       contact: {
         title: "Contact us",
         description: "",
+      },
+
+      bookSpace: {
+        title: "Exhibitor Registration",
+        description: `Secure your booth at ${useAppConfig().app.name} and showcase your brand to thousands of potential customers. Join leading brands and enhance your business growth.`,
       },
 
       faq: {
