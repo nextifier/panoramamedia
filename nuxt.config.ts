@@ -139,9 +139,9 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/sitemap-urls"],
-    autoLastmod: true,
-    discoverImages: false,
-    excludeAppSources: [],
+    // Nuxt 4 compatibility - explicitly enable static route discovery
+    experimentalWarmUp: true,
+    cacheMaxAgeSeconds: 3600,
   },
 
   schemaOrg: {
