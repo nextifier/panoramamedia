@@ -139,9 +139,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/sitemap-urls"],
-    // Nuxt 4 compatibility - explicitly enable static route discovery
-    experimentalWarmUp: true,
-    cacheMaxAgeSeconds: 3600,
+    urls: ["/", "/about", "/contact", "/events", "/faq", "/news", "/products"],
   },
 
   schemaOrg: {
