@@ -139,7 +139,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/sitemap-urls"],
-    urls: ["/", "/about", "/contact", "/events", "/faq", "/news", "/products"],
+    urls: ["/", "/about", "/products", "/events", "/faq", "/contact", "/news"],
   },
 
   schemaOrg: {
