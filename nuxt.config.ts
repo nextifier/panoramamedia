@@ -129,7 +129,7 @@ export default defineNuxtConfig({
     name: "Panorama Media",
     url:
       process.env.NODE_ENV === "production"
-        ? "https://panoramaevents.id"
+        ? "https://panoramamedia.co.id"
         : "http://localhost:3000",
   },
 
