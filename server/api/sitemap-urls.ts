@@ -33,7 +33,9 @@ export default defineSitemapEventHandler(async () => {
       lastmod: post.updated_at,
     }));
 
-    return posts;
+    return [
+      ...posts,
+    ];
   } catch (error) {
     console.error("Failed to fetch posts for sitemap:", error);
     return [];
