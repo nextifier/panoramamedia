@@ -7,19 +7,21 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Private keys that are only available server-side
     pmOneApiKey:
       process.env.NUXT_PM_ONE_API_KEY ||
       "pk_JOtzJkN8cYc6DjxAVDsGX1VCmBcU1lRZrk8LnXiK",
 
-    // Public keys that are exposed to the client
     public: {
-      pmOneApiUrl:
+      siteUrl:
+        process.env.NODE_ENV === "production"
+          ? "https://panoramamedia.co.id"
+          : "http://localhost:3000",
+      apiUrl:
         process.env.NODE_ENV === "production"
           ? "https://api.pmone.id"
           : "http://localhost:8000",
       blogUsernames:
-        "megabuild.blog,flei.blog,morefood.blog,icc.blog,inacon.blog,ioe.blog,pe.blog,cafe.blog,balboa",
+        "megabuild.blog,flei.blog,morefood.blog,icc.blog,inacon.blog,ioe.blog,pe.blog,cafe.blog",
     },
   },
 

@@ -6,23 +6,26 @@ export default defineEventHandler(async (event) => {
   const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
   try {
-    const data = await $fetch(`${config.public.pmOneApiUrl}/api/contact-forms/submit`, {
-      method: "POST",
-      headers: {
-        "X-API-Key": config.pmOneApiKey, // Private - not exposed to browser
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    const data = await $fetch(
+      `${config.public.apiUrl}/api/contact-forms/submit`,
+      {
+        method: "POST",
+        headers: {
+          "X-API-Key": config.pmOneApiKey, // Private - not exposed to browser
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: {
+          project_username: body.project_username,
+          subject: body.subject,
+          data: body.data,
+          // Honeypot fields for bot detection
+          website: body.website || "",
+          _token_time: body._token_time || "",
+        },
+        signal: controller.signal,
       },
-      body: {
-        project_username: body.project_username,
-        subject: body.subject,
-        data: body.data,
-        // Honeypot fields for bot detection
-        website: body.website || "",
-        _token_time: body._token_time || "",
-      },
-      signal: controller.signal,
-    });
+    );
 
     return data;
   } catch (error: any) {
