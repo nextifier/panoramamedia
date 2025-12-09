@@ -139,6 +139,9 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/sitemap-urls"],
+    autoLastmod: true,
+    discoverImages: false,
+    excludeAppSources: [],
   },
 
   schemaOrg: {
